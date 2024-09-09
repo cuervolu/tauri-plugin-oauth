@@ -9,6 +9,10 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@tauri-apps/cli": "^1.5"
+    "@tauri-apps/api": "^2.0.0-beta",
+    "@fabianlars/tauri-plugin-oauth": "file:../../"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.0.0-beta"
   }
 }
