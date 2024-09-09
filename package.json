@@ -1,0 +1,42 @@
+{
+  "name": "@fabianlars/tauri-plugin-oauth",
+  "version": "0.1.0",
+  "authors": [
+    "FabianLars <fabianlars@fabianlars.de>",
+    "Cuervolu <cuervolu@protonmail.com>"
+  ],
+  "description": "A Tauri plugin for spawning a localhost server. Needed for some oauth flows (Login with X).",
+  "type": "module",
+  "types": "./dist-js/index.d.ts",
+  "main": "./dist-js/index.cjs",
+  "module": "./dist-js/index.js",
+  "exports": {
+    "types": "./dist-js/index.d.ts",
+    "import": "./dist-js/index.js",
+    "require": "./dist-js/index.cjs"
+  },
+  "files": [
+    "dist-js",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "prepublishOnly": "pnpm build",
+    "pretest": "pnpm build"
+  },
+  "dependencies": {
+    "@tauri-apps/api": ">=2.0.0-beta.6"
+  },
+  "devDependencies": {
+    "@rollup/plugin-typescript": "^11.1.6",
+    "rollup": "^4.9.6",
+    "typescript": "^5.3.3",
+    "tslib": "^2.6.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/FabianLars/tauri-plugin-oauth"
+  },
+  "license": "MIT OR Apache-2.0",
+  "packageManager": "pnpm@9.9.0+sha512.60c18acd138bff695d339be6ad13f7e936eea6745660d4cc4a776d5247c540d0edee1a563695c183a66eb917ef88f2b4feb1fc25f32a7adcadc7aaf3438e99c1"
+}
