@@ -1,8 +1,137 @@
-# Tauri Plugin oauth
+# Tauri Plugin OAuth
 
-WIP
+![WIP Badge](https://img.shields.io/badge/status-WIP-yellow)
 
-Minimalistic rust library and Tauri plugin(soon) to spawn a temporary localhost server which you redirect to from browser based oauth flows ("Login with X").
-Needed because many sites such as Google and GitHub don't allow custom URI schemes ("deep link") as redirect URLs.
+A minimalistic Rust library and Tauri plugin for handling browser-based OAuth flows in desktop
+applications. This plugin spawns a temporary localhost server to capture OAuth redirects, solving
+the challenge of using OAuth with desktop apps.
 
-See https://github.com/FabianLars/tauri-plugin-deep-link for an alternative based on deep linking. This one will automatically start your app if there is no open instance.
+## Why This Plugin?
+
+Many OAuth providers (like Google and GitHub) don't allow custom URI schemes ("deep links") as
+redirect URLs for security reasons. This plugin provides a solution by:
+
+1. Spawning a temporary local server
+2. Capturing the OAuth redirect
+3. Passing the authorization data back to your app
+
+> **Note**: For an alternative approach using deep linking,
+> see [tauri-plugin-deep-link](https://github.com/tauri-apps/plugins-workspace/tree/v2/plugins/deep-link). The deep-link
+> plugin can automatically start your app if there's no open instance.
+
+## Installation
+
+```toml
+# Cargo.toml
+[dependencies]
+tauri-plugin-oauth = "0.0.0-alpha.0"
+```
+
+For Tauri projects using npm or yarn:
+
+```bash
+npm install @fabianlars/tauri-plugin-oauth
+# or
+yarn add @fabianlars/tauri-plugin-oauth
+```
+
+## Usage
+
+### Rust
+
+```rust
+use tauri::{command, Emitter, Window};
+use tauri_plugin_oauth::start;
+
+#[command]
+async fn start_server(window: Window) -> Result<u16, String> {
+    start(move |url| {
+        // Because of the unprotected localhost port, you must verify the URL here.
+        // Preferebly send back only the token, or nothing at all if you can handle everything else in Rust.
+        let _ = window.emit("redirect_uri", url);
+    })
+        .map_err(|err| err.to_string())
+}
+
+#[cfg_attr(mobile, tauri::mobile_entry_point)]
+pub fn run() {
+    tauri::Builder::default()
+        .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_oauth::init())
+        .invoke_handler(tauri::generate_handler![start_server])
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
+}
+
+```
+
+### TypeScript
+
+```typescript
+import {oauth} from '@fabianlars/tauri-plugin-oauth';
+
+async function startOAuthFlow() {
+  try {
+    const port = await oauth.start();
+    console.log(`OAuth server started on port ${port}`);
+
+    // Set up listeners for OAuth results
+    await oauth.onUrl((url) => {
+      console.log('Received OAuth URL:', url);
+      // Handle the OAuth redirect
+    });
+
+    // Initiate your OAuth flow here
+    // ...
+
+  } catch (error) {
+    console.error('Error starting OAuth server:', error);
+  }
+}
+
+// Don't forget to stop the server when you're done
+async function stopOAuthServer() {
+  try {
+    await oauth.cancel(port);
+    console.log('OAuth server stopped');
+  } catch (error) {
+    console.error('Error stopping OAuth server:', error);
+  }
+}
+```
+
+## Configuration
+
+You can configure the plugin behavior using the `OauthConfig` struct:
+
+```rust
+use tauri_plugin_oauth::OauthConfig;
+
+let config = OauthConfig {
+    ports: Some(vec![8000, 8001, 8002]),
+    response: Some("OAuth process completed. You can close this window.".into()),
+};
+
+start_with_config(config, |url| {
+    // Handle OAuth URL
+})
+.await
+.expect("Failed to start OAuth server");
+```
+
+## Security Considerations
+
+- Always validate the received OAuth URL on your server-side before considering it authentic.
+- Use HTTPS for your OAuth flow to prevent man-in-the-middle attacks.
+- Implement proper token storage and refresh mechanisms in your application.
+
+## Contributing
+
+Contributions are  always welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is dual-licensed under either of the following licenses, at your option:
+
+- [Apache License, Version 2.0](LICENSE_APACHE-2.0)
+- [MIT License](LICENSE_MIT)
