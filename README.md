@@ -9,7 +9,7 @@ the challenge of using OAuth with desktop apps.
 ## Why This Plugin?
 
 Many OAuth providers (like Google and GitHub) don't allow custom URI schemes ("deep links") as
-redirect URLs for security reasons. This plugin provides a solution by:
+redirect URLs. This plugin provides a solution by:
 
 1. Spawning a temporary local server
 2. Capturing the OAuth redirect
