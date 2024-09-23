@@ -30,9 +30,9 @@ tauri-plugin-oauth = "2.0.0-rc.0"
 For Tauri projects using npm or yarn:
 
 ```bash
-npm install @fabianlars/tauri-plugin-oauth
+npm install @fabianlars/tauri-plugin-oauth@2.0.0-rc.0
 # or
-yarn add @fabianlars/tauri-plugin-oauth
+yarn add @fabianlars/tauri-plugin-oauth@2.0.0-rc.0
 ```
 
 ## Usage
