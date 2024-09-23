@@ -24,7 +24,7 @@ redirect URLs. This plugin provides a solution by:
 ```toml
 # Cargo.toml
 [dependencies]
-tauri-plugin-oauth = "0.0.0-alpha.0"
+tauri-plugin-oauth = "2.0.0-rc.0"
 ```
 
 For Tauri projects using npm or yarn:
