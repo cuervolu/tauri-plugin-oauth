@@ -56,7 +56,7 @@ async fn start_server(window: Window) -> Result<u16, String> {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
-        .plugin(tauri_plugin_shell::init())
+
         .plugin(tauri_plugin_oauth::init())
         .invoke_handler(tauri::generate_handler![start_server])
         .run(tauri::generate_context!())
@@ -68,15 +68,15 @@ pub fn run() {
 ### TypeScript
 
 ```typescript
-import {oauth} from '@fabianlars/tauri-plugin-oauth';
+import { start, cancel, onUrl, onInvalidUrl } from '@fabianlars/tauri-plugin-oauth';
 
 async function startOAuthFlow() {
   try {
-    const port = await oauth.start();
+    const port = await start();
     console.log(`OAuth server started on port ${port}`);
 
     // Set up listeners for OAuth results
-    await oauth.onUrl((url) => {
+    await onUrl((url) => {
       console.log('Received OAuth URL:', url);
       // Handle the OAuth redirect
     });
@@ -92,7 +92,7 @@ async function startOAuthFlow() {
 // Don't forget to stop the server when you're done
 async function stopOAuthServer() {
   try {
-    await oauth.cancel(port);
+    await cancel(port);
     console.log('OAuth server stopped');
   } catch (error) {
     console.error('Error stopping OAuth server:', error);
