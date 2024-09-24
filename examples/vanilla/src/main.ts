@@ -1,5 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
-import { oauth } from "@fabianlars/tauri-plugin-oauth";
+import { start, cancel, onInvalidUrl, onUrl } from "@fabianlars/tauri-plugin-oauth";
 
 let resultEl: HTMLElement | null;
 let currentPort: number | null = null;
@@ -11,7 +11,7 @@ async function stopCurrentServer() {
             if (isRustServer) {
                 await invoke("stop_server", { port: currentPort });
             } else {
-                await oauth.cancel(currentPort);
+                await cancel(currentPort);
             }
             console.log(`Stopped server on port ${currentPort}`);
         } catch (error) {
@@ -39,17 +39,17 @@ async function startServerTS() {
     if (resultEl) {
         await stopCurrentServer();
         try {
-            const port = await oauth.start();
+            const port = await start();
             currentPort = port;
             isRustServer = false;
             resultEl.textContent = `OAuth server started on port ${port} (TypeScript)`;
 
-            const unlistenUrl = await oauth.onUrl((url) => {
+            const unlistenUrl = await onUrl((url) => {
                 console.log('Received OAuth URL:', url);
                 resultEl!.textContent += `\nReceived OAuth URL: ${url}`;
             });
 
-            const unlistenInvalidUrl = await oauth.onInvalidUrl((error) => {
+            const unlistenInvalidUrl = await onInvalidUrl((error) => {
                 console.error('Received invalid OAuth URL:', error);
                 resultEl!.textContent += `\nReceived invalid OAuth URL: ${error}`;
             });
