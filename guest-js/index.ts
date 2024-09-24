@@ -24,9 +24,9 @@ export interface OauthConfig {
  * @returns A promise that resolves with the port number the server is listening on.
  * @example
  * ```typescript
- * import { oauth } from '@fabianlars/tauri-plugin-oauth';
+ * import { start } from '@fabianlars/tauri-plugin-oauth';
  *
- * const port = await oauth.start({ ports: [8000, 8001] });
+ * const port = await start({ ports: [8000, 8001] });
  * console.log(`OAuth server started on port ${port}`);
  * ```
  */
@@ -40,9 +40,9 @@ export async function start(config?: OauthConfig): Promise<number> {
  * @returns A promise that resolves when the server has been stopped.
  * @example
  * ```typescript
- * import { oauth } from '@fabianlars/tauri-plugin-oauth';
+ * import { cancel } from '@fabianlars/tauri-plugin-oauth';
  *
- * await oauth.cancel(8000);
+ * await cancel(8000);
  * console.log('OAuth server stopped');
  * ```
  */
@@ -56,9 +56,9 @@ export async function cancel(port: number): Promise<void> {
  * @returns A promise that resolves with a function to remove the event listener.
  * @example
  * ```typescript
- * import { oauth } from '@fabianlars/tauri-plugin-oauth';
+ * import { onUrl } from '@fabianlars/tauri-plugin-oauth';
  *
- * const unlisten = await oauth.onUrl((url) => {
+ * const unlisten = await onUrl((url) => {
  *   console.log('Received OAuth URL:', url);
  *   // Process the OAuth URL...
  * });
@@ -79,9 +79,9 @@ export function onUrl(callback: (url: string) => void): Promise<() => void> {
  * @returns A promise that resolves with a function to remove the event listener.
  * @example
  * ```typescript
- * import { oauth } from '@fabianlars/tauri-plugin-oauth';
+ * import { onInvalidUrl } from '@fabianlars/tauri-plugin-oauth';
  *
- * const unlisten = await oauth.onInvalidUrl((error) => {
+ * const unlisten = await onInvalidUrl((error) => {
  *   console.error('Received invalid OAuth URL:', error);
  *   // Handle the error...
  * });
@@ -95,47 +95,3 @@ export function onInvalidUrl(callback: (error: string) => void): Promise<() => v
     callback(event.payload);
   });
 }
-
-/**
- * Interface for the OAuth plugin functions.
- */
-export interface OauthPlugin {
-  start: typeof start;
-  cancel: typeof cancel;
-  onUrl: typeof onUrl;
-  onInvalidUrl: typeof onInvalidUrl;
-}
-
-/**
- * The main OAuth plugin object containing all plugin functions.
- * @example
- * ```typescript
- * import { oauth } from '@fabianlars/tauri-plugin-oauth';
- *
- * async function initOAuth() {
- *   const port = await oauth.start({ ports: [8000, 8001] });
- *   console.log(`OAuth server started on port ${port}`);
- *
- *   oauth.onUrl((url) => {
- *     console.log('Received OAuth URL:', url);
- *     // Process the OAuth URL...
- *   });
- *
- *   oauth.onInvalidUrl((error) => {
- *     console.error('Received invalid OAuth URL:', error);
- *     // Handle the error...
- *   });
- *
- *   // Later, to stop the server:
- *   // await oauth.cancel(port);
- * }
- *
- * initOAuth();
- * ```
- */
-export const oauth: OauthPlugin = {
-  start,
-  cancel,
-  onUrl,
-  onInvalidUrl,
-};
